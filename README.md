@@ -1,5 +1,7 @@
 A Flutter package that enables screen transitions by swiping.
 
+![all-direction](https://user-images.githubusercontent.com/96510219/208082082-9c26405b-94ca-45b6-bc8a-337852a01617.gif)
+
 ## Features
 
 - Screen transitions can be assigned to swipe operations in each of the four directions.
@@ -104,3 +106,5 @@ SwipeScreen(
 ```
 
 #### Motion
+
+![home-to-left](https://user-images.githubusercontent.com/96510219/208082115-85a8815d-4ea3-4156-b708-106a2750d840.gif)
