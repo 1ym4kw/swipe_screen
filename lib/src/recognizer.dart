@@ -6,18 +6,11 @@ library swipe_screen;
   https://opensource.org/licenses/MIT
  */
 
-
-
 import 'package:flutter/material.dart';
 
-
-
-
-
-typedef SwipeStartCallback = void Function(PointerMoveEvent event, bool isHorizontal);
+typedef SwipeStartCallback = void Function(
+    PointerMoveEvent event, bool isHorizontal);
 typedef SwipeUpdateCallback = void Function(PointerMoveEvent event);
-
-
 
 class SwipeRecognizer extends StatefulWidget {
   const SwipeRecognizer({
@@ -39,10 +32,7 @@ class SwipeRecognizer extends StatefulWidget {
   State<SwipeRecognizer> createState() => _SwipeRecognizerState();
 }
 
-
-
 class _SwipeRecognizerState extends State<SwipeRecognizer> {
-
   late bool _isHorizontal;
   late int _recognized;
   late bool _isStartCalled;
@@ -57,49 +47,47 @@ class _SwipeRecognizerState extends State<SwipeRecognizer> {
   void _onPointerMove(PointerMoveEvent event) {
     final deltaX = event.localDelta.dx;
     final deltaY = event.localDelta.dy;
-    if(deltaX == 0 && deltaY == 0) {
+    if (deltaX == 0 && deltaY == 0) {
       return;
     }
-    if(_extent == 0) {
-      if(deltaX.abs() > deltaY.abs()) {
+    if (_extent == 0) {
+      if (deltaX.abs() > deltaY.abs()) {
         _isHorizontal = true;
-      }else {
+      } else {
         _isHorizontal = false;
       }
     }
-    _extent += _isHorizontal
-        ? deltaX
-        : deltaY;
-    if(_extent.abs() >= 20) {
+    _extent += _isHorizontal ? deltaX : deltaY;
+    if (_extent.abs() >= 20) {
       _recognized += 1;
     }
-    if(_recognized == 0) {
+    if (_recognized == 0) {
       return;
     }
-    if(!_isStartCalled) {
-      if(widget.onSwipeStart != null) {
+    if (!_isStartCalled) {
+      if (widget.onSwipeStart != null) {
         widget.onSwipeStart!.call(event, _isHorizontal);
       }
       _isStartCalled = true;
-    }else {
-      if(widget.onSwipeUpdate != null) {
+    } else {
+      if (widget.onSwipeUpdate != null) {
         widget.onSwipeUpdate!.call(event);
       }
     }
   }
 
   void _onPointerUp(PointerUpEvent event) {
-    if(_recognized == 0) {
+    if (_recognized == 0) {
       return;
     }
-    if(widget.onSwipeEnd != null) {
+    if (widget.onSwipeEnd != null) {
       widget.onSwipeEnd!.call();
     }
   }
 
   void _onPointerCancel(PointerCancelEvent event) {
-    if(_recognized != 0) {
-      if(widget.onSwipeEnd != null) {
+    if (_recognized != 0) {
+      if (widget.onSwipeEnd != null) {
         widget.onSwipeEnd!.call();
       }
     }

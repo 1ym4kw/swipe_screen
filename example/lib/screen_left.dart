@@ -1,10 +1,7 @@
-import 'package:example/screen_home.dart';
 import 'package:flutter/material.dart';
 import 'package:swipe_screen/swipe_screen.dart';
 
-
-
-
+import 'main.dart';
 
 class LeftScreen extends StatelessWidget {
   @override
@@ -29,7 +26,7 @@ class LeftScreen extends StatelessWidget {
         );
       },
       onSwiped: (direction) {
-        switch(direction) {
+        switch (direction) {
           case SwipeDirection.fromRight:
             Navigator.of(context).pop();
             break;

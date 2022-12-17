@@ -1,10 +1,6 @@
-import 'package:example/screen_home.dart';
 import 'package:flutter/material.dart';
 import 'package:swipe_screen/swipe_screen.dart';
-
-
-
-
+import 'main.dart';
 
 class BottomScreen extends StatelessWidget {
   @override
@@ -94,7 +90,7 @@ class BottomScreen extends StatelessWidget {
       },
       isScrollEnable: true,
       onSwiped: (direction) {
-        switch(direction) {
+        switch (direction) {
           case SwipeDirection.fromTop:
             Navigator.of(context).pop();
             break;

@@ -1,6 +1,6 @@
 name: swipe_screen
-description: A widget that enables screen transitions by swiping.
-version: 1.0.0
+description: A Flutter package that enables screen transitions by swiping.
+version: 1.0.1
 repository: https://github.com/1ym4kw/swipe_screen
 
 environment:

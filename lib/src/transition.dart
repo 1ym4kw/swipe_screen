@@ -6,21 +6,13 @@ library swipe_screen;
   https://opensource.org/licenses/MIT
  */
 
-
-
 import 'package:flutter/material.dart';
-
-
-
-
 
 enum TransitionType {
   push,
   pop,
   none,
 }
-
-
 
 class SwipeTransition {
   const SwipeTransition({

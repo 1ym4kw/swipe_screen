@@ -6,16 +6,10 @@ library swipe_screen;
   https://opensource.org/licenses/MIT
  */
 
-
-
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'recognizer.dart';
 import 'transition.dart';
-
-
-
-
 
 enum SwipeDirection {
   fromLeft,
@@ -26,8 +20,6 @@ enum SwipeDirection {
 }
 
 typedef SwipeCallback = void Function(SwipeDirection direction);
-
-
 
 class SwipeScreen extends StatefulWidget {
   const SwipeScreen({
@@ -98,13 +90,12 @@ class SwipeScreen extends StatefulWidget {
   State<SwipeScreen> createState() => _SwipeScreenState();
 }
 
-
-
-class _SwipeScreenState extends State<SwipeScreen> with TickerProviderStateMixin {
-
+class _SwipeScreenState extends State<SwipeScreen>
+    with TickerProviderStateMixin {
   final _uniqueKey = UniqueKey();
 
-  final VelocityTracker _tracker = VelocityTracker.withKind(PointerDeviceKind.touch);
+  final VelocityTracker _tracker =
+      VelocityTracker.withKind(PointerDeviceKind.touch);
   AnimationController? _animationController;
   late Animation<Offset> _currentScreenAnimation;
   late Animation<Offset> _overScreenAnimation;
@@ -123,11 +114,12 @@ class _SwipeScreenState extends State<SwipeScreen> with TickerProviderStateMixin
   @override
   void initState() {
     super.initState();
-    _animationController = AnimationController(vsync: this, duration: const Duration(milliseconds: 500))
+    _animationController = AnimationController(
+        vsync: this, duration: const Duration(milliseconds: 500))
       ..addStatusListener((status) {
-        if(status == AnimationStatus.completed) {
+        if (status == AnimationStatus.completed) {
           _onAnimationCompleted();
-        }else if(status == AnimationStatus.dismissed) {
+        } else if (status == AnimationStatus.dismissed) {
           _onAnimationDismissed();
         }
       });
@@ -143,30 +135,30 @@ class _SwipeScreenState extends State<SwipeScreen> with TickerProviderStateMixin
   }
 
   SwipeDirection _getDirection(double extent) {
-    if(extent == 0.0) {
+    if (extent == 0.0) {
       return SwipeDirection.none;
-    }else if(extent > 0) {
-      if(_isSwipeHorizontal) {
+    } else if (extent > 0) {
+      if (_isSwipeHorizontal) {
         _transitionScreen = widget.swipeFromLeft?.screen;
         _transitionType = widget.swipeFromLeft?.transitionType;
         return _transitionScreen == null
             ? SwipeDirection.none
             : SwipeDirection.fromLeft;
-      }else {
+      } else {
         _transitionScreen = widget.swipeFromTop?.screen;
         _transitionType = widget.swipeFromTop?.transitionType;
         return _transitionScreen == null
             ? SwipeDirection.none
             : SwipeDirection.fromTop;
       }
-    }else {
-      if(_isSwipeHorizontal) {
+    } else {
+      if (_isSwipeHorizontal) {
         _transitionScreen = widget.swipeFromRight?.screen;
         _transitionType = widget.swipeFromRight?.transitionType;
         return _transitionScreen == null
             ? SwipeDirection.none
             : SwipeDirection.fromRight;
-      }else {
+      } else {
         _transitionScreen = widget.swipeFromBottom?.screen;
         _transitionType = widget.swipeFromBottom?.transitionType;
         return _transitionScreen == null
@@ -181,17 +173,13 @@ class _SwipeScreenState extends State<SwipeScreen> with TickerProviderStateMixin
     Offset overBegin = Offset.zero;
     Offset currentEnd = Offset.zero;
     Offset overEnd = Offset.zero;
-    if(direction == SwipeDirection.none) {
+    if (direction == SwipeDirection.none) {
       return [currentBegin, currentEnd];
     }
-    if(_transitionType == TransitionType.push) {
-      overBegin = _isSwipeHorizontal
-          ? Offset(-extent, 0)
-          : Offset(0, -extent);
-    }else if(_transitionType == TransitionType.pop){
-      currentEnd = _isSwipeHorizontal
-          ? Offset(extent, 0)
-          : Offset(0, extent);
+    if (_transitionType == TransitionType.push) {
+      overBegin = _isSwipeHorizontal ? Offset(-extent, 0) : Offset(0, -extent);
+    } else if (_transitionType == TransitionType.pop) {
+      currentEnd = _isSwipeHorizontal ? Offset(extent, 0) : Offset(0, extent);
     }
     return [currentBegin, currentEnd, overBegin, overEnd];
   }
@@ -206,12 +194,12 @@ class _SwipeScreenState extends State<SwipeScreen> with TickerProviderStateMixin
   }
 
   void _setScreen(SwipeDirection direction) {
-    if(direction == SwipeDirection.none) {
+    if (direction == SwipeDirection.none) {
       return;
     }
-    if(_transitionType == TransitionType.push) {
+    if (_transitionType == TransitionType.push) {
       _overScreen = _transitionScreen;
-    }else if(_transitionType == TransitionType.pop) {
+    } else if (_transitionType == TransitionType.pop) {
       _underScreen = _transitionScreen;
     }
   }
@@ -230,29 +218,25 @@ class _SwipeScreenState extends State<SwipeScreen> with TickerProviderStateMixin
     double currentExtent = _swipeExtent;
     final deltaX = event.localDelta.dx;
     final deltaY = event.localDelta.dy;
-    if(widget.isScrollEnable) {
-      if(!_isSwipeHorizontal && _scrollController.offset != 0.0) {
+    if (widget.isScrollEnable) {
+      if (!_isSwipeHorizontal && _scrollController.offset != 0.0) {
         return;
       }
     }
-    if(_primaryExtent == 0) {
-      _primaryExtent += _isSwipeHorizontal
-          ? deltaX
-          : deltaY;
+    if (_primaryExtent == 0) {
+      _primaryExtent += _isSwipeHorizontal ? deltaX : deltaY;
     }
-    currentExtent += _isSwipeHorizontal
-        ? deltaX
-        : deltaY;
-    if(_primaryExtent.sign != currentExtent.sign) {
+    currentExtent += _isSwipeHorizontal ? deltaX : deltaY;
+    if (_primaryExtent.sign != currentExtent.sign) {
       return;
     }
     final oldDirection = _currentDirection;
     _currentDirection = _getDirection(currentExtent);
-    if(_currentDirection == SwipeDirection.none) {
+    if (_currentDirection == SwipeDirection.none) {
       return;
     }
     _swipeExtent = currentExtent;
-    if(oldDirection != _currentDirection) {
+    if (oldDirection != _currentDirection) {
       final offset = _getOffset(_currentDirection, _swipeExtent.sign);
       setState(() {
         _setScreen(_currentDirection);
@@ -260,12 +244,11 @@ class _SwipeScreenState extends State<SwipeScreen> with TickerProviderStateMixin
         _overScreenAnimation = _getAnimation(offset[2], offset[3]);
       });
     }
-    if(!_animationController!.isAnimating) {
-      final size = _isSwipeHorizontal
-          ? context.size!.width
-          : context.size!.height;
+    if (!_animationController!.isAnimating) {
+      final size =
+          _isSwipeHorizontal ? context.size!.width : context.size!.height;
       _animationController!.value = _swipeExtent.abs() / size;
-      if(widget.isScrollEnable) {
+      if (widget.isScrollEnable) {
         _isSwipeHorizontal
             ? _scrollController.jumpTo(_scrollController.offset)
             : _scrollController.jumpTo(0.0);
@@ -278,12 +261,12 @@ class _SwipeScreenState extends State<SwipeScreen> with TickerProviderStateMixin
         ? _tracker.getVelocity().pixelsPerSecond.dx
         : _tracker.getVelocity().pixelsPerSecond.dy;
     final flingDirection = _getDirection(flingVelocity);
-    if(_currentDirection == SwipeDirection.none) {
+    if (_currentDirection == SwipeDirection.none) {
       return;
     }
-    if(flingDirection == _currentDirection) {
+    if (flingDirection == _currentDirection) {
       _animationController!.forward();
-    }else {
+    } else {
       _animationController!.reverse();
     }
   }
@@ -297,7 +280,7 @@ class _SwipeScreenState extends State<SwipeScreen> with TickerProviderStateMixin
   }
 
   void _onAnimationCompleted() {
-    if(widget.onSwiped != null) {
+    if (widget.onSwiped != null) {
       widget.onSwiped!.call(_currentDirection);
     }
     setState(() {
@@ -309,7 +292,7 @@ class _SwipeScreenState extends State<SwipeScreen> with TickerProviderStateMixin
   Widget build(BuildContext context) {
     Widget stack = Stack(
       children: [
-        if(_underScreen != null)
+        if (_underScreen != null)
           Positioned.fill(
             child: ClipRect(
               clipper: _SwipeScreenClipper(
@@ -328,7 +311,7 @@ class _SwipeScreenState extends State<SwipeScreen> with TickerProviderStateMixin
             child: widget.currentScreenBuilder(_scrollController),
           ),
         ),
-        if(_overScreen != null)
+        if (_overScreen != null)
           SlideTransition(
             position: _overScreenAnimation,
             child: Material(
@@ -356,8 +339,6 @@ class _SwipeScreenState extends State<SwipeScreen> with TickerProviderStateMixin
   }
 }
 
-
-
 class _SwipeScreenClipper extends CustomClipper<Rect> {
   _SwipeScreenClipper({
     this.isSwipeHorizontal = true,
@@ -369,12 +350,12 @@ class _SwipeScreenClipper extends CustomClipper<Rect> {
 
   @override
   Rect getClip(Size size) {
-    if(isSwipeHorizontal) {
+    if (isSwipeHorizontal) {
       final double offset = animation.value.dx * size.width;
       return offset > 0
           ? Rect.fromLTRB(0.0, 0.0, offset, size.height)
           : Rect.fromLTRB(size.width + offset, 0.0, size.width, size.height);
-    }else {
+    } else {
       final double offset = animation.value.dy * size.height;
       return offset > 0
           ? Rect.fromLTRB(0.0, 0.0, size.width, offset)
