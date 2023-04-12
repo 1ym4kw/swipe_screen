@@ -6,3 +6,6 @@
 
 * Fix `lib/swipe_screeen`.
 * Update `example`.
+
+## 1.1.0
+
