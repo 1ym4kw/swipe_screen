@@ -3,26 +3,45 @@ import 'package:swipe_screen/swipe_screen.dart';
 
 import 'main.dart';
 
-class LeftScreen extends StatelessWidget {
+class LeftScreen extends StatefulWidget {
+  const LeftScreen({super.key});
+
+  @override
+  State<StatefulWidget> createState() => _LeftScreenState();
+}
+
+class _LeftScreenState extends State<LeftScreen> {
+
+  final SwipeMovement _movement = SwipeMovement();
+
   @override
   Widget build(BuildContext context) {
     return SwipeScreen(
       key: UniqueKey(),
-      swipeFromRight: SwipeTransition(
+      movement: _movement,
+      swipeFromRight: const SwipeTransition(
         screen: HomeScreen(),
         transitionType: TransitionType.pop,
       ),
       currentScreenBuilder: (ScrollController controller) {
-        return Scaffold(
-          backgroundColor: Colors.red.shade100,
-          body: const Center(
-            child: Text(
-              'LeftScreen',
-              style: TextStyle(
-                fontSize: 32,
+        return WillPopScope(
+          child: Scaffold(
+            backgroundColor: Colors.red.shade100,
+            body: const Center(
+              child: Text(
+                'LeftScreen',
+                style: TextStyle(
+                  fontSize: 32,
+                ),
               ),
             ),
           ),
+          onWillPop: () async {
+            setState(() {
+              _movement.startTransition(SwipeDirection.fromRight);
+            });
+            return false;
+          },
         );
       },
       onSwiped: (direction) {

@@ -3,11 +3,13 @@ import 'package:swipe_screen/swipe_screen.dart';
 import 'main.dart';
 
 class RightScreen extends StatelessWidget {
+  const RightScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return SwipeScreen(
       key: UniqueKey(),
-      swipeFromLeft: SwipeTransition(
+      swipeFromLeft: const SwipeTransition(
         screen: HomeScreen(),
         transitionType: TransitionType.pop,
       ),

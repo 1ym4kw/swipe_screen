@@ -4,11 +4,13 @@ import 'package:swipe_screen/swipe_screen.dart';
 import 'main.dart';
 
 class TopScreen extends StatelessWidget {
+  const TopScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return SwipeScreen(
       key: UniqueKey(),
-      swipeFromBottom: SwipeTransition(
+      swipeFromBottom: const SwipeTransition(
         screen: HomeScreen(),
         transitionType: TransitionType.pop,
       ),

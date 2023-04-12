@@ -8,6 +8,7 @@ library swipe_screen;
 
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'movement.dart';
 import 'recognizer.dart';
 import 'transition.dart';
 
@@ -25,6 +26,7 @@ class SwipeScreen extends StatefulWidget {
   const SwipeScreen({
     required Key key,
     required this.currentScreenBuilder,
+    this.movement,
     this.swipeFromLeft,
     this.swipeFromTop,
     this.swipeFromRight,
@@ -40,6 +42,31 @@ class SwipeScreen extends StatefulWidget {
   /// If a scrollable widget such as a ListView is to be placed on the screen,
   /// the controller for that widget must be the [ScrollController] provided as an argument to this function.
   final Widget Function(ScrollController controller) currentScreenBuilder;
+
+  /// Enables screen transitions at arbitrary times.
+  ///
+  /// At the timing when you want to make a screen transition,
+  /// you can make a screen transition in any direction by writing the following.
+  ///
+  /// The following example shows a screen transition from left to right.
+  /// The timing of the transition shall be when a certain button is pressed.
+  ///
+  /// ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+  ///   final SwipeMovement movement = SwipeMovement();
+  ///   SwipeScreen(
+  ///     movement: movement,
+  ///   ),
+  ///   Button(
+  ///     onPressed: () {
+  ///       setState(() {
+  ///         movement.startTransition(SwipeDirection.fromLeft);
+  ///       });
+  ///     },
+  ///   ),
+  /// ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+  ///
+  ///See [example] for detailed usage.
+  final SwipeMovement? movement;
 
   /// Create a screen that transitions by swiping from left to right.
   ///
@@ -101,6 +128,7 @@ class _SwipeScreenState extends State<SwipeScreen>
   late Animation<Offset> _overScreenAnimation;
   late ScrollController _scrollController;
 
+  late SwipeMovement _movement;
   Widget? _transitionScreen;
   TransitionType? _transitionType;
   Widget? _overScreen;
@@ -126,6 +154,10 @@ class _SwipeScreenState extends State<SwipeScreen>
     _currentScreenAnimation = _getAnimation(Offset.zero, Offset.zero);
     _overScreenAnimation = _getAnimation(Offset.zero, Offset.zero);
     _scrollController = ScrollController();
+    _movement = widget.movement ?? SwipeMovement();
+    if (_movement.direction != SwipeDirection.none) {
+      _onMovementChange(_movement.direction);
+    }
   }
 
   @override
@@ -269,6 +301,49 @@ class _SwipeScreenState extends State<SwipeScreen>
     } else {
       _animationController!.reverse();
     }
+  }
+
+  void _onMovementChange(SwipeDirection direction) async {
+    double extent = 0;
+    _currentDirection = direction;
+    switch (direction) {
+      case SwipeDirection.fromLeft:
+        _isSwipeHorizontal = true;
+        _transitionScreen = widget.swipeFromLeft?.screen;
+        _transitionType = widget.swipeFromLeft?.transitionType;
+        extent = 1.0;
+        break;
+      case SwipeDirection.fromTop:
+        _isSwipeHorizontal = false;
+        _transitionScreen = widget.swipeFromTop?.screen;
+        _transitionType = widget.swipeFromTop?.transitionType;
+        extent = 1.0;
+        break;
+      case SwipeDirection.fromRight:
+        _isSwipeHorizontal = true;
+        _transitionScreen = widget.swipeFromRight?.screen;
+        _transitionType = widget.swipeFromRight?.transitionType;
+        extent = -1.0;
+        break;
+      case SwipeDirection.fromBottom:
+        _isSwipeHorizontal = false;
+        _transitionScreen = widget.swipeFromBottom?.screen;
+        _transitionType = widget.swipeFromBottom?.transitionType;
+        extent = -1.0;
+        break;
+      case SwipeDirection.none:
+        break;
+    }
+    if (_transitionScreen == null || _transitionType == null) {
+      return;
+    }
+    final offset = _getOffset(_currentDirection, extent);
+    setState(() {
+      _setScreen(_currentDirection);
+      _currentScreenAnimation = _getAnimation(offset[0], offset[1]);
+      _overScreenAnimation = _getAnimation(offset[2], offset[3]);
+    });
+    await _animationController!.forward();
   }
 
   void _onAnimationDismissed() {
