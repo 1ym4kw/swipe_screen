@@ -9,6 +9,9 @@ A Flutter package that enables screen transitions by swiping.
   - swipeFromTop: Top to Bottom
   - swipeFromRight: Right to Left
   - swipeFromBottom: Bottom to Top.
+- Enables to start swiping the screen at arbitrary times.
+  - When `movement` is set, the screen swiping starts at the timing when `startTransition()` is executed.
+  - The direction in which the screen is swiped can set by the argument of `startTransition()`.
 - The type of screen transition can be selected.
   - Overlay the destination screen on top of the current screen (`TransitionType.push`)
   - Display the destination screen from the below of the current screen (`TransitionType.pop`)
@@ -44,6 +47,7 @@ dependencies:
 | Parameter | Class | Description |
 |-|-|-|
 | `currentScreenBuilder` | Function | A builder for creating the current screen. If a scrollable widget is to be placed on the screen, the controller for that widget must be the `ScrollController` provided by this function. |
+| `movement` | SwipeMovemnt | Enables to start swiping the screen at arbitrary times. |
 | `swipeFromLeft` | SwipeTransition | Create a screen that transitions by swiping from left to right. |
 | `swipeFromTop` | SwipeTransition | Create a screen that transitions by swiping from top to bottom. |
 | `swipeFromRight` | SwipeTransition | Create a screen that transitions by swiping from right to left. |
@@ -60,51 +64,110 @@ dependencies:
 
 - There are two types of `TransitionType` as follows.
   - `TransitionType.push`   
-  The transition is made so that the destination screen overlaps the current screen.
+    The transition is made so that the destination screen overlaps the current screen.
   - `TransitionType.pop`   
-  The screen to be transitioned to is displayed from below of the current screen.
+    The screen to be transitioned to is displayed from below of the current screen.
 
 ### Example
 
 #### Code
 
+##### HomeScreen
+
 ```dart
+final SwipeMovement _movement = SwipeMovement();
+
 SwipeScreen(
-      key: UniqueKey(),
-      swipeFromRight: SwipeTransition(
-        screen: LeftScreen(),
-        transitionType: TransitionType.push,
-      ),
-      currentScreenBuilder: (ScrollController controller) {
-        return Scaffold(
-          body: Center(
-            child: Text(
+  key: UniqueKey(),
+  movement: _movement,
+  swipeFromLeft: SwipeTransition(
+    screen: LeftScreen(),
+    transitionType: TransitionType.push,
+  ),
+  currentScreenBuilder: (ScrollController controller) {
+    return Scaffold(
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Text(
               'HomeScreen',
               style: TextStyle(
                 fontSize: 32,
               ),
             ),
-          ),
-        );
-      },
-      onSwiped: (direction) {
-        switch(direction) {
-          case SwipeDirection.fromLeft:
-            Navigator.push(
-              context,
-              PageRouteBuilder(
-                pageBuilder: (_, __, ___) => LeftScreen(),
-                transitionDuration: const Duration(seconds: 0),
+            ElevatedButton(
+              onPressed: () {
+                setState(() {
+                  _movement.startTransition(SwipeDirection.fromLeft);
+                });
+              },
+              child: const Text(
+                'to LeftScreen',
               ),
-            );
-            break;
-          default:
-            break;
-        }
-      },
+            ),
+          ],
+        ),
+      ),
     );
+  },
+  onSwiped: (direction) {
+    if (direction == SwipeDirection.fromLeft) {
+      Navigator.push(
+        context,
+        PageRouteBuilder(
+          pageBuilder: (_, __, ___) => LeftScreen(),
+          transitionDuration: const Duration(seconds: 0),
+        ),
+      );
+    }
+  },
+);
+```
+
+##### LeftScreen
+
+```dart
+final SwipeMovement _movement = SwipeMovement();
+WillPopScope(
+
+  child: SwipeScreen(
+    key: UniqueKey(),
+    movement: _movement,
+    swipeFromRight: SwipeTransition(
+      screen: HomeScreen(),
+      transitionType: TransitionType.pop,
+    ),
+    currentScreenBuilder: (ScrollController controller) {
+      return WillPopScope(
+        child: Scaffold(
+          backgroundColor: Colors.red.shade100,
+          body: const Center(
+            child: Text(
+              'LeftScreen',
+              style: TextStyle(
+                fontSize: 32,
+              ),
+            ),
+          ),
+        ),
+        onWillPop: () async {
+          setState(() {
+            _movement.startTransition(SwipeDirection.fromRight);
+          });
+          return false;
+        },
+      );
+    },
+    onSwiped: (direction) {
+      if (direction == SwipeDirection.fromRight) {
+        Navigator.of(context).pop();
+      }
+    },
+  ),
+);
 ```
 
 #### Motion
 
-![home-to-left](https://user-images.githubusercontent.com/96510219/208082115-85a8815d-4ea3-4156-b708-106a2750d840.gif)
+![home-to-left](https://user-images.githubusercontent.com/96510219/231736042-87472f8b-095a-4215-87ee-165d0cfabf5a.gif)

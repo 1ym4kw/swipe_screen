@@ -43,27 +43,13 @@ class SwipeScreen extends StatefulWidget {
   /// the controller for that widget must be the [ScrollController] provided as an argument to this function.
   final Widget Function(ScrollController controller) currentScreenBuilder;
 
-  /// Enables screen transitions at arbitrary times.
+  /// Enables to start swiping the screen at arbitrary times.
   ///
-  /// At the timing when you want to make a screen transition,
-  /// you can make a screen transition in any direction by writing the following.
+  /// By assigning [SwipeMovement], the screen can be swiped at the timing
+  /// when the [startTransition] method is executed.
   ///
-  /// The following example shows a screen transition from left to right.
-  /// The timing of the transition shall be when a certain button is pressed.
-  ///
-  /// ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-  ///   final SwipeMovement movement = SwipeMovement();
-  ///   SwipeScreen(
-  ///     movement: movement,
-  ///   ),
-  ///   Button(
-  ///     onPressed: () {
-  ///       setState(() {
-  ///         movement.startTransition(SwipeDirection.fromLeft);
-  ///       });
-  ///     },
-  ///   ),
-  /// ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+  /// Assign the direction in which you want the screen to be swiped ([SwipeDirection])
+  /// as the argument of the [startTransition] method.
   ///
   ///See [example] for detailed usage.
   final SwipeMovement? movement;

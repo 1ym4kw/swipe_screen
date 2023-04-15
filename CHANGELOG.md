@@ -9,3 +9,4 @@
 
 ## 1.1.0
 
+* Add the ability to transition screens at specified times.

@@ -19,14 +19,12 @@ class SwipeRecognizer extends StatefulWidget {
     this.onSwipeUpdate,
     this.onSwipeEnd,
     required this.child,
-    this.behavior = HitTestBehavior.opaque,
   }) : super(key: key);
 
   final SwipeStartCallback? onSwipeStart;
   final SwipeUpdateCallback? onSwipeUpdate;
   final VoidCallback? onSwipeEnd;
   final Widget child;
-  final HitTestBehavior behavior;
 
   @override
   State<SwipeRecognizer> createState() => _SwipeRecognizerState();
@@ -37,11 +35,15 @@ class _SwipeRecognizerState extends State<SwipeRecognizer> {
   late int _recognized;
   late bool _isStartCalled;
   late double _extent;
+  late bool _isLongPress;
+  final Stopwatch _timer = Stopwatch();
 
   void _onPointerDown(PointerDownEvent event) {
     _recognized = 0;
     _isStartCalled = false;
     _extent = 0;
+    _isLongPress = false;
+    _timer.start();
   }
 
   void _onPointerMove(PointerMoveEvent event) {
@@ -62,6 +64,15 @@ class _SwipeRecognizerState extends State<SwipeRecognizer> {
       _recognized += 1;
     }
     if (_recognized == 0) {
+      final elapsed = _timer.elapsed.inMilliseconds;
+      if (elapsed >= 700) {
+        _isLongPress = true;
+      }
+      return;
+    }
+    if (_isLongPress) {
+      _timer.reset();
+      _recognized = 0;
       return;
     }
     if (!_isStartCalled) {
@@ -77,6 +88,7 @@ class _SwipeRecognizerState extends State<SwipeRecognizer> {
   }
 
   void _onPointerUp(PointerUpEvent event) {
+    _timer.reset();
     if (_recognized == 0) {
       return;
     }
@@ -86,6 +98,7 @@ class _SwipeRecognizerState extends State<SwipeRecognizer> {
   }
 
   void _onPointerCancel(PointerCancelEvent event) {
+    _timer.reset();
     if (_recognized != 0) {
       if (widget.onSwipeEnd != null) {
         widget.onSwipeEnd!.call();
