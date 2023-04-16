@@ -33,6 +33,7 @@ class SwipeScreen extends StatefulWidget {
     this.swipeFromBottom,
     this.onSwiped,
     this.isScrollEnable = false,
+    this.initialScrollOffset = 0,
   }) : super(key: key);
 
   /// A builder for creating the current screen.
@@ -99,6 +100,10 @@ class SwipeScreen extends StatefulWidget {
   /// If the current screen is scrollable, assign [true].
   final bool isScrollEnable;
 
+  /// If the current screen is scrollable, the initial scroll offset can be set.
+  /// This value is assigned to [initialScrollOffset] in [ScrollController].
+  final double initialScrollOffset;
+
   @override
   State<SwipeScreen> createState() => _SwipeScreenState();
 }
@@ -139,7 +144,9 @@ class _SwipeScreenState extends State<SwipeScreen>
       });
     _currentScreenAnimation = _getAnimation(Offset.zero, Offset.zero);
     _overScreenAnimation = _getAnimation(Offset.zero, Offset.zero);
-    _scrollController = ScrollController();
+    _scrollController = ScrollController(
+      initialScrollOffset: widget.initialScrollOffset,
+    );
     _movement = widget.movement ?? SwipeMovement();
     if (_movement.direction != SwipeDirection.none) {
       _onMovementChange(_movement.direction);

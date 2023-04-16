@@ -54,6 +54,7 @@ dependencies:
 | `swipeFromBottom` | SwipeTransition | Create a screen that transitions by swiping from bottom to top. |
 | `onSwiped` | SwipeCallBack | A callback called when a swipe is made and screen transition is complete. The direction of the swipe can get. |
 | `isScrollEnable` | bool | If a scrollable widget is to be placed on the `currentScreenBuilder`, assign `true`. |
+| `initialScrollOffset` | double | If the current screen is scrollable, the initial scroll offset can be set. |
 
 #### SwipeTransition
 

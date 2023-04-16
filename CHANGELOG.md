@@ -10,3 +10,7 @@
 ## 1.1.0
 
 * Add the ability to transition screens at specified times.
+
+## 1.1.1
+
+* Add `initialScrollOffset` that allows the initial value of the scroll offset to be set.
