@@ -32,6 +32,7 @@ class SwipeScreen extends StatefulWidget {
     this.swipeFromRight,
     this.swipeFromBottom,
     this.onSwiped,
+    this.shadowColor,
     this.isScrollEnable = false,
     this.initialScrollOffset = 0,
   }) : super(key: key);
@@ -96,6 +97,9 @@ class SwipeScreen extends StatefulWidget {
   /// [SwipeDirection.fromBottom] indicates a bottom-to-top swipe.
   /// [SwipeDirection.none] indicates that no swipe is performed.
   final SwipeCallback? onSwiped;
+
+  /// Set the color of the shadows at the edges of the screen.
+  final Color? shadowColor;
 
   /// If the current screen is scrollable, assign [true].
   final bool isScrollEnable;
@@ -375,7 +379,7 @@ class _SwipeScreenState extends State<SwipeScreen>
           position: _currentScreenAnimation,
           child: Material(
             elevation: 15,
-            shadowColor: Colors.white70,
+            shadowColor: widget.shadowColor,
             child: widget.currentScreenBuilder(_scrollController),
           ),
         ),
@@ -384,7 +388,7 @@ class _SwipeScreenState extends State<SwipeScreen>
             position: _overScreenAnimation,
             child: Material(
               elevation: 15,
-              shadowColor: Colors.white70,
+              shadowColor: widget.shadowColor,
               child: _overScreen!,
             ),
           ),

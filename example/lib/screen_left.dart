@@ -16,16 +16,16 @@ class _LeftScreenState extends State<LeftScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return SwipeScreen(
-      key: UniqueKey(),
-      movement: _movement,
-      swipeFromRight: const SwipeTransition(
-        screen: HomeScreen(),
-        transitionType: TransitionType.pop,
-      ),
-      currentScreenBuilder: (ScrollController controller) {
-        return WillPopScope(
-          child: Scaffold(
+    return WillPopScope(
+      child: SwipeScreen(
+        key: UniqueKey(),
+        movement: _movement,
+        swipeFromRight: const SwipeTransition(
+          screen: HomeScreen(),
+          transitionType: TransitionType.pop,
+        ),
+        currentScreenBuilder: (ScrollController controller) {
+          return Scaffold(
             backgroundColor: Colors.red.shade100,
             body: const Center(
               child: Text(
@@ -35,23 +35,23 @@ class _LeftScreenState extends State<LeftScreen> {
                 ),
               ),
             ),
-          ),
-          onWillPop: () async {
-            setState(() {
-              _movement.startTransition(SwipeDirection.fromRight);
-            });
-            return false;
-          },
-        );
-      },
-      onSwiped: (direction) {
-        switch (direction) {
-          case SwipeDirection.fromRight:
-            Navigator.of(context).pop();
-            break;
-          default:
-            break;
-        }
+          );
+        },
+        onSwiped: (direction) {
+          switch (direction) {
+            case SwipeDirection.fromRight:
+              Navigator.of(context).pop();
+              break;
+            default:
+              break;
+          }
+        },
+      ),
+      onWillPop: () async {
+        setState(() {
+          _movement.startTransition(SwipeDirection.fromRight);
+        });
+        return false;
       },
     );
   }

@@ -53,6 +53,7 @@ dependencies:
 | `swipeFromRight` | SwipeTransition | Create a screen that transitions by swiping from right to left. |
 | `swipeFromBottom` | SwipeTransition | Create a screen that transitions by swiping from bottom to top. |
 | `onSwiped` | SwipeCallBack | A callback called when a swipe is made and screen transition is complete. The direction of the swipe can get. |
+| `shadowColor`| Color | Set the color of the shadows at the edges of the screen. |
 | `isScrollEnable` | bool | If a scrollable widget is to be placed on the `currentScreenBuilder`, assign `true`. |
 | `initialScrollOffset` | double | If the current screen is scrollable, the initial scroll offset can be set. |
 
@@ -131,7 +132,6 @@ SwipeScreen(
 ```dart
 final SwipeMovement _movement = SwipeMovement();
 WillPopScope(
-
   child: SwipeScreen(
     key: UniqueKey(),
     movement: _movement,
@@ -140,24 +140,16 @@ WillPopScope(
       transitionType: TransitionType.pop,
     ),
     currentScreenBuilder: (ScrollController controller) {
-      return WillPopScope(
-        child: Scaffold(
-          backgroundColor: Colors.red.shade100,
-          body: const Center(
-            child: Text(
-              'LeftScreen',
-              style: TextStyle(
-                fontSize: 32,
-              ),
+      return Scaffold(
+        backgroundColor: Colors.red.shade100,
+        body: const Center(
+          child: Text(
+            'LeftScreen',
+            style: TextStyle(
+              fontSize: 32,
             ),
           ),
         ),
-        onWillPop: () async {
-          setState(() {
-            _movement.startTransition(SwipeDirection.fromRight);
-          });
-          return false;
-        },
       );
     },
     onSwiped: (direction) {
@@ -166,6 +158,12 @@ WillPopScope(
       }
     },
   ),
+  onWillPop: () async {
+    setState(() {
+      _movement.startTransition(SwipeDirection.fromRight);
+    });
+    return false;
+  },
 );
 ```
 
