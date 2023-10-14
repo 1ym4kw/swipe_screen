@@ -18,3 +18,7 @@
 ## 1.1.2
 
 *Add `shadowColor` that allows the color of the shadows at the edges of the screen to be set.
+
+## 1.2.0
+
+* It is now possible to enable or disable swiping for each direction.

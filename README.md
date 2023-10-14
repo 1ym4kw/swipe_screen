@@ -63,6 +63,7 @@ dependencies:
 |-|-|-|
 | `screen` | Widget | A widget that creates a screen that transitions with a swipe. |
 | `transitionType` | TransitionType | A type of transition by swiping the screen. |
+| `enableSwipe` | bool | Enables or disables to swipe the screen by this direction. |
 
 - There are two types of `TransitionType` as follows.
   - `TransitionType.push`   

@@ -168,12 +168,18 @@ class _SwipeScreenState extends State<SwipeScreen>
       return SwipeDirection.none;
     } else if (extent > 0) {
       if (_isSwipeHorizontal) {
+        if (widget.swipeFromLeft?.enableSwipe == false) {
+          return SwipeDirection.none;
+        }
         _transitionScreen = widget.swipeFromLeft?.screen;
         _transitionType = widget.swipeFromLeft?.transitionType;
         return _transitionScreen == null
             ? SwipeDirection.none
             : SwipeDirection.fromLeft;
       } else {
+        if (widget.swipeFromTop?.enableSwipe == false) {
+          return SwipeDirection.none;
+        }
         _transitionScreen = widget.swipeFromTop?.screen;
         _transitionType = widget.swipeFromTop?.transitionType;
         return _transitionScreen == null
@@ -182,12 +188,18 @@ class _SwipeScreenState extends State<SwipeScreen>
       }
     } else {
       if (_isSwipeHorizontal) {
+        if (widget.swipeFromRight?.enableSwipe == false) {
+          return SwipeDirection.none;
+        }
         _transitionScreen = widget.swipeFromRight?.screen;
         _transitionType = widget.swipeFromRight?.transitionType;
         return _transitionScreen == null
             ? SwipeDirection.none
             : SwipeDirection.fromRight;
       } else {
+        if (widget.swipeFromBottom?.enableSwipe == false) {
+          return SwipeDirection.none;
+        }
         _transitionScreen = widget.swipeFromBottom?.screen;
         _transitionType = widget.swipeFromBottom?.transitionType;
         return _transitionScreen == null

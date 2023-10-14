@@ -18,6 +18,7 @@ class SwipeTransition {
   const SwipeTransition({
     required this.screen,
     required this.transitionType,
+    this.enableSwipe = true,
   });
 
   /// A widget that creates a screen that transitions with a swipe.
@@ -34,4 +35,9 @@ class SwipeTransition {
   /// If [TransitionType.none]is assigned,
   /// the screen does not transition when swiping.
   final TransitionType transitionType;
+
+  /// Enables or disables to swipe the screen by this direction.
+  /// When set to true, swiping is enabled. When set to false, swiping is disabled.
+  /// In default, it is set to true.
+  final bool enableSwipe;
 }
